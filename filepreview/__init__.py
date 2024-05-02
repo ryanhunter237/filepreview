@@ -14,6 +14,6 @@ def create_app(test_config: dict = None):
     app.register_blueprint(file_blueprint)
 
     with app.app_context():
-        db.create_all()  # Create tables if they don't exist
+        db.create_all()
 
     return app
