@@ -25,11 +25,11 @@ def runner(app: Flask) -> FlaskCliRunner:
     return app.test_cli_runner()
 
 
-def test_single_post_and_get(client: FlaskClient):
+def test_file_api_single_post_and_get(client: FlaskClient):
     # Test POST method
     post_data = {
-        "groupid": "testgroup",
-        "filepath": str(PureWindowsPath("C:/Users/User/Documents/test.txt")),
+        "group_id": "testgroup",
+        "file_path": str(PureWindowsPath("Documents/test.txt")),
         "md5": "123abc",
     }
     response = client.post(
@@ -48,11 +48,11 @@ def test_single_post_and_get(client: FlaskClient):
         assert data[0][key] == post_data[key]
 
 
-def test_multiple_post_and_get(client: FlaskClient):
+def test_file_api_multiple_post_and_get(client: FlaskClient):
     post_data = [
-        {"groupid": "gid1", "filepath": "test/path", "md5": "md51"},
-        {"groupid": "gid2", "filepath": "test/path/two", "md5": "md52"},
-        {"groupid": "gid1", "filepath": "test/path/three", "md5": "md52"},
+        {"group_id": "gid1", "file_path": "test/path", "md5": "md51"},
+        {"group_id": "gid2", "file_path": "test/path/two", "md5": "md52"},
+        {"group_id": "gid1", "file_path": "test/path/three", "md5": "md52"},
     ]
     for pd in post_data:
         response = client.post("/api/file", json=pd)
@@ -63,7 +63,22 @@ def test_multiple_post_and_get(client: FlaskClient):
     data = response.get_json()
     assert response.status_code == 200
     assert len(data) == 2
-    filepaths = [d["filepath"] for d in data]
-    assert sorted(filepaths) == ["test/path", "test/path/three"]
+    file_paths = [d["file_path"] for d in data]
+    assert sorted(file_paths) == ["test/path", "test/path/three"]
     md5s = [d["md5"] for d in data]
     assert sorted(md5s) == ["md51", "md52"]
+
+
+def test_file_data_api_single_post_and_get(client: FlaskClient):
+    # Test POST method
+    post_data = {
+        "md5": "123abc",
+        "num_bytes": 12345,
+        "local_path": str(PureWindowsPath("C:/Users/User/Documents/test.txt")),
+    }
+    response = client.post(
+        "/api/file-data",
+        json=post_data,
+    )
+    assert response.status_code == 201
+    assert response.get_json()["message"] == "FileData added successfully"
