@@ -6,6 +6,7 @@ from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
 
 from filepreview import create_app
+from filepreview.models.models import FileData
 
 
 @pytest.fixture
@@ -69,7 +70,7 @@ def test_file_api_multiple_post_and_get(client: FlaskClient):
     assert sorted(md5s) == ["md51", "md52"]
 
 
-def test_file_data_api_single_post_and_get(client: FlaskClient):
+def test_file_data_api_single_post(client: FlaskClient, app: Flask):
     # Test POST method
     post_data = {
         "md5": "123abc",
@@ -82,3 +83,8 @@ def test_file_data_api_single_post_and_get(client: FlaskClient):
     )
     assert response.status_code == 201
     assert response.get_json()["message"] == "FileData added successfully"
+    with app.app_context():
+        file_data: FileData = FileData.query.filter_by(md5="123abc").first()
+        assert file_data is not None
+        assert file_data.num_bytes == post_data["num_bytes"]
+        assert file_data.local_path == post_data["local_path"]
