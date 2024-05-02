@@ -1,4 +1,5 @@
 from flask import Flask
+
 from .models.models import db
 from .api.file_routes import file_blueprint
 
@@ -9,7 +10,9 @@ def create_app(test_config: dict=None):
         app.config.update(test_config)
     
     db.init_app(app)
-    
     app.register_blueprint(file_blueprint)
 
+    with app.app_context():
+        db.create_all()  # Create tables if they don't exist
+    
     return app
