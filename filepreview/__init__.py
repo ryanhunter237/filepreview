@@ -2,6 +2,7 @@ from flask import Flask
 
 from .models.models import db
 from .api.file_routes import file_blueprint
+from .api.image_routes import image_blueprint
 
 
 def create_app(test_config: dict = None):
@@ -12,6 +13,7 @@ def create_app(test_config: dict = None):
 
     db.init_app(app)
     app.register_blueprint(file_blueprint)
+    app.register_blueprint(image_blueprint)
 
     with app.app_context():
         db.create_all()

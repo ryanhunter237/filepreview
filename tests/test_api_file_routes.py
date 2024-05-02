@@ -27,7 +27,6 @@ def runner(app: Flask) -> FlaskCliRunner:
 
 
 def test_file_api_single_post_and_get(client: FlaskClient):
-    # Test POST method
     post_data = {
         "group_id": "testgroup",
         "file_path": str(PureWindowsPath("Documents/test.txt")),
@@ -40,7 +39,6 @@ def test_file_api_single_post_and_get(client: FlaskClient):
     assert response.status_code == 201
     assert response.get_json()["message"] == "File added successfully"
 
-    # Test GET method
     response = client.get("/api/files/testgroup")
     data = response.get_json()
     assert response.status_code == 200
@@ -71,7 +69,6 @@ def test_file_api_multiple_post_and_get(client: FlaskClient):
 
 
 def test_file_data_api_single_post(client: FlaskClient, app: Flask):
-    # Test POST method
     post_data = {
         "md5": "123abc",
         "num_bytes": 12345,

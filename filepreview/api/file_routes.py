@@ -1,30 +1,14 @@
-from typing import Any
-
 from flask import Blueprint, request, jsonify, Response
-from sqlalchemy.exc import SQLAlchemyError
 
-from ..models.models import db, File, FileData
+from ..models.models import File, FileData
+from .utils import add_to_database
 
 file_blueprint = Blueprint("file", __name__)
 
 
-def add_to_database(data: dict[str, Any], model_cls) -> tuple[Response, int]:
-    try:
-        model_instance = model_cls(**data)
-        db.session.add(model_instance)
-        db.session.commit()
-        return jsonify({"message": f"{model_cls.__name__} added successfully"}), 201
-    except KeyError as e:
-        return jsonify({"error": "Data error", "message": str(e)}), 400
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        return jsonify({"error": "Database error", "message": str(e)}), 500
-    except Exception as e:
-        return jsonify({"error": "Processing error", "message": str(e)}), 500
-
-
 @file_blueprint.route("/api/file", methods=["POST"])
 def add_file() -> tuple[Response, int]:
+    """data must have keys group_id, file_path, and md5"""
     data = request.json
     return add_to_database(data, File)
 
@@ -42,5 +26,6 @@ def get_files_by_group_id(group_id: str) -> Response:
 
 @file_blueprint.route("/api/file-data", methods=["POST"])
 def add_file_data() -> tuple[Response, int]:
+    """data must have keys md5, num_bytes, and local_path"""
     data = request.json
     return add_to_database(data, FileData)

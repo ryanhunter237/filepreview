@@ -30,3 +30,17 @@ class FileData(db.Model):
 
     def __repr__(self) -> str:
         return f"<FileData md5={self.md5}, num_bytes={self.num_bytes}, local_path={self.local_path}>"
+
+
+class Thumbnail(db.Model):
+    __tablename__ = "thumbnail"
+
+    # md5 hash identifying a file's contents
+    md5: str = db.Column(db.String(32), primary_key=True, nullable=False)
+    # the order to display the thumbnails in
+    order: int = db.Column(db.Integer, primary_key=True, nullable=False)
+    # the absolute path where the thumbnail is saved on the local filesystem
+    path: str = db.Column(db.String, nullable=False)
+
+    def __repr__(self) -> str:
+        return f"<Thumbnail md5={self.md5}, order={self.order}, path={self.path}>"
