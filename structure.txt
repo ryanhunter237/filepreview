@@ -1,0 +1,42 @@
+/filepreview
+    /filepreview
+        /static
+            /css
+                - style.css
+            /js
+                - script.js
+            /images
+                - logo.png
+        /templates
+            - base.html
+            - index.html
+            - about.html
+            /partials
+                - header.html
+                - footer.html
+        /api
+            - __init__.py
+            - views.py
+            - utils.py
+        /main
+            - __init__.py
+            - views.py
+            - forms.py
+            - models.py
+        /auth
+            - __init__.py
+            - views.py
+            - models.py
+        /common
+            - __init__.py
+            - utilities.py
+            - filters.py
+        __init__.py
+    /tests
+        - __init__.py
+        - test_basic.py
+        - test_models.py
+    setup.py
+    MANIFEST.in
+    README.md
+    requirements.txt
