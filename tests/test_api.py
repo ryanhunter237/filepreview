@@ -4,32 +4,36 @@ import pytest
 
 from filepreview import create_app
 
+
 @pytest.fixture
 def app():
-    test_config = {
-        "TESTING": True,
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"
-    }
+    test_config = {"TESTING": True, "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"}
     app = create_app(test_config)
     yield app
+
 
 @pytest.fixture
 def client(app):
     return app.test_client()
 
+
 @pytest.fixture
 def runner(app):
     return app.test_cli_runner()
 
+
 def test_post_and_get_methods(client):
     # Test POST method
-    response = client.post('/api/file', json={
-        'groupid': 'testgroup',
-        'filepath': str(PureWindowsPath("C:/Users/User/Documents/test.txt")),
-        'md5': '123abc'
-    })
+    response = client.post(
+        "/api/file",
+        json={
+            "groupid": "testgroup",
+            "filepath": str(PureWindowsPath("C:/Users/User/Documents/test.txt")),
+            "md5": "123abc",
+        },
+    )
     assert response.status_code == 201
-    assert response.get_json()['message'] == "File added successfully"
+    assert response.get_json()["message"] == "File added successfully"
 
     # # Test GET method
     # response = client.get('/api/files/testgroup')

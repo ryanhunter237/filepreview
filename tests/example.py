@@ -2,13 +2,13 @@ import requests
 from pathlib import Path
 
 # Define the API endpoint URL (change localhost and port if needed)
-url = 'http://127.0.0.1:5000/api/file'
+url = "http://127.0.0.1:5000/api/file"
 
 # Define the data you want to send (example data)
 data = {
-    'groupid': 'exampleGroup123',
-    'filepath': str(Path('path/to/file2.txt')),
-    'md5': 'e41d8cd98f00b204e9800998ecf8427e'  # An example MD5 hash
+    "groupid": "exampleGroup123",
+    "filepath": str(Path("path/to/file2.txt")),
+    "md5": "e41d8cd98f00b204e9800998ecf8427e",  # An example MD5 hash
 }
 
 # Send a POST request
