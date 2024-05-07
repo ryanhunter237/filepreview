@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from ..main.models import db
 
 
-def add_to_database(data: dict[str, Any], model_cls) -> tuple[Response, int]:
+def add_to_database(data: dict[str, Any], model_cls):
     try:
         model_instance = model_cls(**data)
         db.session.add(model_instance)

@@ -1,9 +1,24 @@
+import os
+
 from flask import Blueprint, render_template
 
 from .models import db, File, FileData, Thumbnail
 
 
 view_blueprint = Blueprint("view", __name__)
+
+
+from flask import send_from_directory, abort
+
+
+@view_blueprint.route("/thumbnail/<path:filepath>")
+def serve_thumbnail(filepath: str):
+    directory = os.path.dirname(filepath)
+    filename = os.path.basename(filepath)
+    try:
+        return send_from_directory(directory, filename)
+    except FileNotFoundError:
+        abort(404)
 
 
 @view_blueprint.route("/", methods=["GET"])

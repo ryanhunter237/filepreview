@@ -7,14 +7,14 @@ file_blueprint = Blueprint("file", __name__)
 
 
 @file_blueprint.route("/api/file", methods=["POST"])
-def add_file() -> tuple[Response, int]:
+def add_file():
     """data must have keys group_id, file_path, and md5"""
     data = request.json
     return add_to_database(data, File)
 
 
 @file_blueprint.route("/api/files/<group_id>", methods=["GET"])
-def get_files_by_group_id(group_id: str) -> Response:
+def get_files_by_group_id(group_id: str):
     files: list[File] = File.query.filter_by(group_id=group_id).all()
     return jsonify(
         [
@@ -25,7 +25,7 @@ def get_files_by_group_id(group_id: str) -> Response:
 
 
 @file_blueprint.route("/api/file-data", methods=["POST"])
-def add_file_data() -> tuple[Response, int]:
+def add_file_data():
     """data must have keys md5, num_bytes, and local_path"""
     data = request.json
     return add_to_database(data, FileData)

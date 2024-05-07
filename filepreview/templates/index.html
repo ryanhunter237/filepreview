@@ -22,8 +22,11 @@
           <td>{{ file.filename }}</td>
           <td>{{ file.num_bytes }}</td>
           <td>
-            {% for thumbnail in file.thumbnails %}
-            <img src="{{ thumbnail }}" style="height: 100px" />
+            {% for thumbnail_path in file.thumbnails %}
+            <img
+              src="{{ url_for('view.serve_thumbnail', filepath=thumbnail_path) }}"
+              style="height: 100px"
+            />
             <!-- Adjust size as needed -->
             {% endfor %}
           </td>
