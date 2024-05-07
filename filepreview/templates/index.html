@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>File Overview</title>
+  </head>
+  <body>
+    <h1>File Overview</h1>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Group ID</th>
+          <th>Filename</th>
+          <th>Number of Bytes</th>
+          <th>Thumbnails</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for file in files %}
+        <tr>
+          <td>{{ file.group_id }}</td>
+          <td>{{ file.filename }}</td>
+          <td>{{ file.num_bytes }}</td>
+          <td>
+            {% for thumbnail in file.thumbnails %}
+            <img src="{{ thumbnail }}" style="height: 100px" />
+            <!-- Adjust size as needed -->
+            {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
