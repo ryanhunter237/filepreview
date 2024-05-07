@@ -25,7 +25,7 @@
             {% for thumbnail_path in file.thumbnails %}
             <img
               src="{{ url_for('view.serve_thumbnail', filepath=thumbnail_path) }}"
-              style="height: 100px"
+              style="height: 50px"
             />
             <!-- Adjust size as needed -->
             {% endfor %}
