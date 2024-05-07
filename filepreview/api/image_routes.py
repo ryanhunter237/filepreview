@@ -1,6 +1,6 @@
 from flask import Blueprint, request, Response
 
-from ..models.models import Thumbnail, Image
+from ..main.models import Thumbnail, Image
 from .utils import add_to_database
 
 

@@ -6,7 +6,7 @@ from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
 
 from filepreview import create_app
-from filepreview.models.models import FileData
+from filepreview.main.models import FileData
 
 
 @pytest.fixture

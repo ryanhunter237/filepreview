@@ -1,6 +1,6 @@
 from flask import Flask
 
-from .models.models import db
+from .main.models import db
 from .api.file_routes import file_blueprint
 from .api.image_routes import image_blueprint
 

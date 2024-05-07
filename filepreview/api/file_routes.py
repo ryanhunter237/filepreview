@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, Response
 
-from ..models.models import File, FileData
+from ..main.models import File, FileData
 from .utils import add_to_database
 
 file_blueprint = Blueprint("file", __name__)

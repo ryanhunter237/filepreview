@@ -3,7 +3,7 @@ from typing import Any
 from flask import Response, jsonify
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..models.models import db
+from ..main.models import db
 
 
 def add_to_database(data: dict[str, Any], model_cls) -> tuple[Response, int]:
