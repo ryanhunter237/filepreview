@@ -11,6 +11,16 @@ view_blueprint = Blueprint("view", __name__)
 from flask import send_from_directory, abort
 
 
+def convert_size(size: int):
+    size = float(size)
+    suffixes = ["B", "KB", "MB", "GB"]
+    suffix_idx = 0
+    while size >= 1024 and suffix_idx < 3:
+        size /= 1024
+        suffix_idx += 1
+    return f"{round(size)} {suffixes[suffix_idx]}"
+
+
 @view_blueprint.route("/thumbnail/<path:filepath>")
 def serve_thumbnail(filepath: str):
     directory = os.path.dirname(filepath)
@@ -33,33 +43,44 @@ def index() -> str:
         )
         .join(FileData, File.md5 == FileData.md5)
         .join(Thumbnail, File.md5 == Thumbnail.md5)
-        .order_by(Thumbnail.order)
         .all()
     )
 
-    # Process data to group thumbnails by md5
+    # processed_data of the form
+    # (group_id, file_path) -> (filename, num_bytes, thumbnails)
     processed_data = {}
     for group_id, file_path, num_bytes, thumb_path, thumb_order in data:
-        filename = file_path.split("/")[-1]  # Assumes UNIX-like file paths
-        if group_id not in processed_data:
-            processed_data[group_id] = {
+        key = (group_id, file_path)
+        if key not in processed_data:
+            filename = file_path.split("/")[-1]  # Assumes UNIX-like file paths
+            processed_data[key] = {
                 "filename": filename,
                 "num_bytes": num_bytes,
                 "thumbnails": [],
             }
-        processed_data[group_id]["thumbnails"].append((thumb_order, thumb_path))
+        processed_data[key]["thumbnails"].append((thumb_order, thumb_path))
 
-    # Convert dict to list and sort thumbnails
-    final_data = []
-    for key, value in processed_data.items():
-        value["thumbnails"].sort()  # Sorts by thumbnail order
-        final_data.append(
-            {
-                "group_id": key,
+    # files of the form
+    # (filename, file_size, thumbnails), or
+    # (filename, file_size, thumbnails, group_id, rowspan)
+    # if it's the first file for a group_id
+    files = []
+    unique_group_ids = set(group_id for group_id, _ in processed_data)
+    for group_id in unique_group_ids:
+        data_for_group_id = [
+            value for key, value in processed_data.items() if key[0] == group_id
+        ]
+        for i, value in enumerate(data_for_group_id):
+            value["thumbnails"].sort()  # Sorts by thumbnail order
+            file = {
                 "filename": value["filename"],
-                "num_bytes": value["num_bytes"],
-                "thumbnails": [path for order, path in value["thumbnails"]],
+                "file_size": convert_size(value["num_bytes"]),
+                "thumbnails": [path for _, path in value["thumbnails"]],
             }
-        )
+            # the first file for every group_id gets the group_id data
+            if i == 0:
+                file["group_id"] = group_id
+                file["rowspan"] = len(data_for_group_id)
+            files.append(file)
 
-    return render_template("index.html", files=final_data)
+    return render_template("index.html", files=files)

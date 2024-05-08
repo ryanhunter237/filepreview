@@ -3,31 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <title>File Overview</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
   </head>
   <body>
-    <h1>File Overview</h1>
-    <table border="1">
+    <table>
       <thead>
         <tr>
           <th>Group ID</th>
           <th>Filename</th>
-          <th>Number of Bytes</th>
+          <th>File Size</th>
           <th>Thumbnails</th>
         </tr>
       </thead>
       <tbody>
         {% for file in files %}
         <tr>
-          <td>{{ file.group_id }}</td>
+          {% if file.rowspan %}
+          <td rowspan="{{ file.rowspan }}">{{ file.group_id }}</td>
+          {% endif %}
           <td>{{ file.filename }}</td>
-          <td>{{ file.num_bytes }}</td>
-          <td>
+          <td>{{ file.file_size }}</td>
+          <td class="thumbnails">
             {% for thumbnail_path in file.thumbnails %}
             <img
               src="{{ url_for('view.serve_thumbnail', filepath=thumbnail_path) }}"
-              style="height: 50px"
             />
-            <!-- Adjust size as needed -->
             {% endfor %}
           </td>
         </tr>

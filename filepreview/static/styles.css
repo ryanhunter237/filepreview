@@ -1,0 +1,42 @@
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: red;
+}
+
+table {
+  border-collapse: collapse;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: blue;
+}
+
+th,
+td {
+  text-align: center;
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+thead th {
+  font-size: 1.2em;
+  background-color: #f4f4f4;
+}
+
+.thumbnails img {
+  vertical-align: middle;
+  margin-right: 10px; /* Space between thumbnails */
+}
+
+.thumbnails {
+  text-align: center;
+}
+
+tr:not(:last-child) td {
+  border-bottom: none;
+}
