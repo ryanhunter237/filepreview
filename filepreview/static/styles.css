@@ -6,14 +6,12 @@ body {
   min-height: 100%;
   display: flex;
   justify-content: center;
-  background-color: red;
 }
 
 table {
   border-collapse: collapse;
   margin-top: 10px;
   margin-bottom: 10px;
-  background-color: blue;
 }
 
 th,
