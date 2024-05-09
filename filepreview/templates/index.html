@@ -22,9 +22,17 @@
         {% for file in files %}
         <tr>
           {% if file.rowspan %}
-          <td rowspan="{{ file.rowspan }}">{{ file.group_id }}</td>
+          <td rowspan="{{ file.rowspan }}">
+            <a href="{{ url_for('view.group_page', group_id=file.group_id) }}"
+              >{{ file.group_id }}</a
+            >
+          </td>
           {% endif %}
-          <td>{{ file.filename }}</td>
+          <td>
+            <a href="{{ url_for('view.file_page', filename=file.filename) }}"
+              >{{ file.filename }}</a
+            >
+          </td>
           <td>{{ file.file_size }}</td>
           <td class="thumbnails">
             {% for thumbnail_path in file.thumbnails %}

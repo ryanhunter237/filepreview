@@ -38,3 +38,17 @@ thead th {
 tr:not(:last-child) td {
   border-bottom: none;
 }
+
+a {
+  text-decoration: none;
+  color: #0066cc;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #0066cc;
+}
+
+a:visited {
+  color: #551a8b;
+}

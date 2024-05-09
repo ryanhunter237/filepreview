@@ -86,3 +86,13 @@ def index() -> str:
             files.append(file)
 
     return render_template("index.html", files=files)
+
+
+@view_blueprint.route("/group/<group_id>")
+def group_page(group_id):
+    return render_template("group.html", group_id=group_id)
+
+
+@view_blueprint.route("/file/<path:filename>")
+def file_page(filename):
+    return render_template("file.html", filename=filename)
