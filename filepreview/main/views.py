@@ -41,8 +41,8 @@ def index() -> str:
             Thumbnail.path,
             Thumbnail.order,
         )
-        .join(FileData, File.md5 == FileData.md5)
-        .join(Thumbnail, File.md5 == Thumbnail.md5)
+        .outerjoin(FileData, File.md5 == FileData.md5)
+        .outerjoin(Thumbnail, File.md5 == Thumbnail.md5)
         .all()
     )
 
@@ -58,20 +58,22 @@ def index() -> str:
                 "num_bytes": num_bytes,
                 "thumbnails": [],
             }
-        processed_data[key]["thumbnails"].append((thumb_order, thumb_path))
+        if thumb_order is not None:
+            processed_data[key]["thumbnails"].append((thumb_order, thumb_path))
 
     # files of the form
-    # (filename, file_size, thumbnails), or
+    # (filename, file_size, thumbnails), or if it's the first file for a group_id
     # (filename, file_size, thumbnails, group_id, rowspan)
-    # if it's the first file for a group_id
     files = []
-    unique_group_ids = set(group_id for group_id, _ in processed_data)
+    unique_group_ids = sorted(set(group_id for group_id, _ in processed_data))
     for group_id in unique_group_ids:
         data_for_group_id = [
             value for key, value in processed_data.items() if key[0] == group_id
         ]
+        data_for_group_id.sort(key=lambda x: x["filename"])
         for i, value in enumerate(data_for_group_id):
-            value["thumbnails"].sort()  # Sorts by thumbnail order
+            # Sorts by thumbnail order
+            value["thumbnails"].sort()
             file = {
                 "filename": value["filename"],
                 "file_size": convert_size(value["num_bytes"]),

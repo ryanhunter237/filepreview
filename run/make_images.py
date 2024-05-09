@@ -65,19 +65,19 @@ def post_thumbnail(md5, order, path):
     )
 
 
-group_ids = ["group-1", "group-2", "group-3"]
+group_ids = ["group-4", "group-5", "group-6"]
 rootdir = Path("files").absolute()
-rootdir.mkdir()
+rootdir.mkdir(exist_ok=True)
 for group_id in group_ids:
     group_dir = rootdir / group_id
-    group_dir.mkdir()
+    group_dir.mkdir(exist_ok=True)
     num_files_per_group = random.randint(4, 8)
     for _ in range(num_files_per_group):
         file_md5 = "".join(random.choices(hex_lowercase, k=32))
         filename = "".join(random.choices(ascii_lowercase, k=10)) + ".ext"
         post_file(group_id, f"rel/path/{filename}", file_md5)
         post_file_data(file_md5, random.randint(10**3, 10**8), "")
-        num_images_per_file = random.randint(1, 4)
+        num_images_per_file = random.randint(0, 2)
         for order in range(num_images_per_file):
             width = random.randint(300, 1000)
             height = random.randint(300, 1000)
