@@ -2,9 +2,43 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Group ID</title>
+    <title>Group ID: {{ group_id }}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
   </head>
   <body>
     <h1>Group ID: {{ group_id }}</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Directory</th>
+          <th>Filename</th>
+          <th>File Size</th>
+          <th>Thumbnails</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for file in files %}
+        <tr>
+          <td>{{ file.directory }}</td>
+          <td>
+            <a href="{{ url_for('view.file_page', filename=file.filename) }}"
+              >{{ file.filename }}</a
+            >
+          </td>
+          <td>{{ file.file_size }}</td>
+          <td class="thumbnails">
+            {% for thumbnail_path in file.thumbnails %}
+            <img
+              src="{{ url_for('view.serve_thumbnail', filepath=thumbnail_path) }}"
+            />
+            {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </body>
 </html>
