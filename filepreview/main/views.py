@@ -90,6 +90,18 @@ def index() -> str:
 
 @view_blueprint.route("/group/<group_id>")
 def group_page(group_id):
+    data = (
+        db.session.query(
+            File.file_path,
+            FileData.num_bytes,
+            Thumbnail.path,
+            Thumbnail.order,
+        )
+        .outerjoin(FileData, File.md5 == FileData.md5)
+        .outerjoin(Thumbnail, File.md5 == Thumbnail.md5)
+        .filter(File.group_id == group_id)
+        .all()
+    )
     return render_template("group.html", group_id=group_id)
 
 
