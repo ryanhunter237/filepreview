@@ -10,4 +10,4 @@ build/
 *.egg-info/
 
 notes/
-run/
+run/files/

@@ -1,0 +1,7 @@
+with the virtual environment loaded, start the flask server with 
+
+python -m flask run
+
+from the run directory, create the images and thumbnails for the fake files and add everything to the database by running
+
+python make_images.py
