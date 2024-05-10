@@ -48,14 +48,14 @@ def index() -> str:
     )
 
     # processed_data of the form
-    # (group_id, file_path) -> (filename, num_bytes, thumbnails)
+    # (group_id, file_path) -> (file_path, num_bytes, thumbnails)
     processed_data = {}
     for group_id, file_path, num_bytes, thumb_path, thumb_order in data:
         key = (group_id, file_path)
         if key not in processed_data:
-            filename = file_path.split("/")[-1]  # Assumes UNIX-like file paths
             processed_data[key] = {
-                "filename": filename,
+                "file_path": file_path,
+                "filename": file_path.split("/")[-1],
                 "num_bytes": num_bytes,
                 "thumbnails": [],
             }
@@ -63,8 +63,9 @@ def index() -> str:
             processed_data[key]["thumbnails"].append((thumb_order, thumb_path))
 
     # files of the form
-    # (filename, file_size, thumbnails), or if it's the first file for a group_id
-    # (filename, file_size, thumbnails, group_id, rowspan)
+    # (group_id, file_path, filename, file_size, thumbnails)
+    # or if it's the first file for a group_id, then
+    # (group_id, file_path, filename, file_size, thumbnails, rowspan)
     files = []
     unique_group_ids = sorted(set(group_id for group_id, _ in processed_data))
     for group_id in unique_group_ids:
@@ -76,13 +77,14 @@ def index() -> str:
             # Sorts by thumbnail order
             value["thumbnails"].sort()
             file = {
+                "group_id": group_id,
+                "file_path": value["file_path"],
                 "filename": value["filename"],
                 "file_size": convert_size(value["num_bytes"]),
                 "thumbnails": [path for _, path in value["thumbnails"]],
             }
-            # the first file for every group_id gets the group_id data
+            # the first file for every group_id gets the rowspan
             if i == 0:
-                file["group_id"] = group_id
                 file["rowspan"] = len(data_for_group_id)
             files.append(file)
 
@@ -121,6 +123,8 @@ def group_page(group_id):
         # assuming Posix path
         posix_path = PurePosixPath(file_path)
         file = {
+            "group_id": group_id,
+            "file_path": file_path,
             "directory": str(posix_path.parent),
             "filename": posix_path.name,
             "file_size": convert_size(value["num_bytes"]),
@@ -131,6 +135,6 @@ def group_page(group_id):
     return render_template("group.html", group_id=group_id, files=files)
 
 
-@view_blueprint.route("/file/<path:filename>")
-def file_page(filename):
-    return render_template("file.html", filename=filename)
+@view_blueprint.route("/group/<group_id>/file/<path:file_path>")
+def file_page(group_id, file_path):
+    return render_template("file.html", group_id=group_id, file_path=file_path)

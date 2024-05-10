@@ -29,7 +29,8 @@
           </td>
           {% endif %}
           <td>
-            <a href="{{ url_for('view.file_page', filename=file.filename) }}"
+            <a
+              href="{{ url_for('view.file_page', group_id=file.group_id, file_path=file.file_path) }}"
               >{{ file.filename }}</a
             >
           </td>
