@@ -4,9 +4,9 @@ import random
 import numpy as np
 from PIL import Image
 import requests
-from string import ascii_lowercase
+from string import ascii_letters
 
-hex_lowercase = "0123456789abcdef"
+hex_chars = "0123456789abcdefABCDEF"
 
 
 def random_gradient(width: int, height: int):
@@ -65,7 +65,7 @@ def post_thumbnail(md5, order, path):
     )
 
 
-group_ids = ["group-4", "group-5", "group-6"]
+group_ids = ["".join(random.choices(hex_chars, k=32)) for _ in range(6)]
 rootdir = Path("files").absolute()
 rootdir.mkdir(exist_ok=True)
 for group_id in group_ids:
@@ -73,9 +73,10 @@ for group_id in group_ids:
     group_dir.mkdir(exist_ok=True)
     num_files_per_group = random.randint(4, 8)
     for _ in range(num_files_per_group):
-        file_md5 = "".join(random.choices(hex_lowercase, k=32))
-        filename = "".join(random.choices(ascii_lowercase, k=10)) + ".ext"
-        post_file(group_id, f"rel/path/{filename}", file_md5)
+        file_md5 = "".join(random.choices(hex_chars, k=32))
+        filename = "".join(random.choices(ascii_letters, k=10)) + ".ext"
+        directory = random.choice(["rel/path1/", "rel/path1/two/", "test/"])
+        post_file(group_id, f"{directory}{filename}", file_md5)
         post_file_data(file_md5, random.randint(10**3, 10**8), "")
         num_images_per_file = random.randint(0, 2)
         for order in range(num_images_per_file):

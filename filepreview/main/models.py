@@ -1,4 +1,7 @@
+from pathlib import PurePath
+
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import validates
 
 db = SQLAlchemy()
 
@@ -14,6 +17,18 @@ class File(db.Model):
     # md5 hash of the file's contents
     md5: str = db.Column(db.String(32), nullable=False)
 
+    @validates("group_id", "md5")
+    def make_lowercase(self, key, value: str):
+        if value:
+            return value.lower()
+        return value
+
+    @validates("file_path")
+    def make_posix(self, key, path: str):
+        if path:
+            return PurePath(path).as_posix()
+        return path
+
     def __repr__(self) -> str:
         return f"<File group_id={self.group_id}, file_path={self.file_path}, md5={self.md5}>"
 
@@ -27,6 +42,18 @@ class FileData(db.Model):
     num_bytes: int = db.Column(db.Integer, nullable=False)
     # the absolute path where the file is saved on the local filesystem
     local_path: str = db.Column(db.String, nullable=False)
+
+    @validates("md5")
+    def make_lowercase(self, key, value: str):
+        if value:
+            return value.lower()
+        return value
+
+    @validates("local_path")
+    def make_posix(self, key, path: str):
+        if path:
+            return PurePath(path).as_posix()
+        return path
 
     def __repr__(self) -> str:
         return f"<FileData md5={self.md5}, num_bytes={self.num_bytes}, local_path={self.local_path}>"
@@ -42,6 +69,18 @@ class Thumbnail(db.Model):
     # the absolute path where the thumbnail is saved on the local filesystem
     path: str = db.Column(db.String, nullable=False)
 
+    @validates("md5")
+    def make_lowercase(self, key, value: str):
+        if value:
+            return value.lower()
+        return value
+
+    @validates("path")
+    def make_posix(self, key, path: str):
+        if path:
+            return PurePath(path).as_posix()
+        return path
+
     def __repr__(self) -> str:
         return f"<Thumbnail md5={self.md5}, order={self.order}, path={self.path}>"
 
@@ -55,3 +94,15 @@ class Image(db.Model):
     order: int = db.Column(db.Integer, primary_key=True, nullable=False)
     # the absolute path where the thumbnail is saved on the local filesystem
     path: str = db.Column(db.String, nullable=False)
+
+    @validates("md5")
+    def make_lowercase(self, key, value: str):
+        if value:
+            return value.lower()
+        return value
+
+    @validates("path")
+    def make_posix(self, key, path: str):
+        if path:
+            return PurePath(path).as_posix()
+        return path
