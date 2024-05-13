@@ -22,6 +22,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updateImage(index) {
     imageElement.src = images[index];
+    document.getElementById("imageInfo").textContent = `Image ${index + 1} of ${
+      images.length
+    }`;
   }
 
   document.getElementById("prev").addEventListener("click", () => {

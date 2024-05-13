@@ -10,16 +10,17 @@
     />
   </head>
   <body>
-    <h1>Group ID: {{ group_id }}</h1>
+    <h2>Group ID: {{ group_id }}</h2>
     <h2>Path: {{ file_path }}</h2>
+    <div id="imageInfo"></div>
     <div
       id="viewer"
       data-group-id="{{ group_id }}"
       data-file-path="{{ file_path }}"
     >
-      <button id="prev" class="btn">&#8678;</button>
+      <button id="prev" class="btn">«</button>
       <img id="currentImage" src="" alt="Image viewer" />
-      <button id="next" class="btn">&#8680;</button>
+      <button id="next" class="btn">»</button>
     </div>
     <script src="{{ url_for('static', filename='viewer.js') }}"></script>
   </body>
