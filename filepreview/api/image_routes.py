@@ -1,6 +1,6 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify, url_for
 
-from ..main.models import Thumbnail, Image
+from ..main.models import db, Thumbnail, Image, File
 from .utils import add_to_database
 
 
@@ -19,3 +19,23 @@ def add_image():
     """data must have keys md5, order, and path"""
     data = request.json
     return add_to_database(data, Image)
+
+
+@image_blueprint.route("/api/images", methods=["GET"])
+def get_images():
+    group_id = request.args.get("group_id")
+    file_path = request.args.get("file_path")
+    data = (
+        db.session.query(
+            Image.order,
+            Image.path,
+        )
+        .join(File, File.md5 == Image.md5)
+        .filter(File.group_id == group_id)
+        .filter(File.file_path == file_path)
+        .all()
+    )
+    image_urls = [
+        url_for("view.serve_thumbnail", filepath=path) for _, path in sorted(data)
+    ]
+    return jsonify(image_urls)

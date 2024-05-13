@@ -1,9 +1,9 @@
 import os
 from pathlib import PurePosixPath
 
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, url_for
 
-from .models import db, File, FileData, Thumbnail
+from .models import db, File, FileData, Thumbnail, Image
 
 
 view_blueprint = Blueprint("view", __name__)
@@ -123,7 +123,6 @@ def group_page(group_id):
         # assuming Posix path
         posix_path = PurePosixPath(file_path)
         file = {
-            "group_id": group_id,
             "file_path": file_path,
             "directory": str(posix_path.parent),
             "filename": posix_path.name,
@@ -137,4 +136,7 @@ def group_page(group_id):
 
 @view_blueprint.route("/group/<group_id>/file/<path:file_path>")
 def file_page(group_id, file_path):
-    return render_template("file.html", group_id=group_id, file_path=file_path)
+    filename = PurePosixPath(file_path).name
+    return render_template(
+        "file.html", group_id=group_id, file_path=file_path, filename=filename
+    )

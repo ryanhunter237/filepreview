@@ -2,10 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Filename</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File: {{ filename }}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='file_viewer.css') }}"
+    />
   </head>
   <body>
     <h1>Group ID: {{ group_id }}</h1>
     <h2>Path: {{ file_path }}</h2>
+    <div
+      id="viewer"
+      data-group-id="{{ group_id }}"
+      data-file-path="{{ file_path }}"
+    >
+      <button id="prev" class="btn">&#8678;</button>
+      <img id="currentImage" src="" alt="Image viewer" />
+      <button id="next" class="btn">&#8680;</button>
+    </div>
+    <script src="{{ url_for('static', filename='viewer.js') }}"></script>
   </body>
 </html>
