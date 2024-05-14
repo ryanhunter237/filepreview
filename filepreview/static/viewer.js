@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const viewer = document.getElementById("viewer");
   const imageElement = document.getElementById("currentImage");
   const imageIndicator = document.getElementById("image-indicator");
+  const prevButton = document.getElementById("prev");
+  const nextButton = document.getElementById("next");
   let images = [];
   let currentIndex = 0;
 
@@ -15,9 +17,15 @@ document.addEventListener("DOMContentLoaded", function () {
         if (images.length > 0) {
           createImageIndicators(images.length);
           updateImage(0);
+          showViewerElements();
+        } else {
+          hideViewerElements();
         }
       })
-      .catch((error) => console.error("Error fetching images:", error));
+      .catch((error) => {
+        console.error("Error fetching images:", error);
+        hideViewerElements();
+      });
   }
 
   function createImageIndicators(count) {
@@ -43,6 +51,22 @@ document.addEventListener("DOMContentLoaded", function () {
     dots.forEach((dot, index) => {
       dot.classList.toggle("active", index === currentIndex);
     });
+  }
+
+  function showViewerElements() {
+    imageIndicator.style.display = "flex";
+    viewer.style.display = "flex";
+    prevButton.style.display = "block";
+    imageElement.style.display = "block";
+    nextButton.style.display = "block";
+  }
+
+  function hideViewerElements() {
+    imageIndicator.style.display = "none";
+    viewer.style.display = "none";
+    prevButton.style.display = "none";
+    imageElement.style.display = "none";
+    nextButton.style.display = "none";
   }
 
   document.getElementById("prev").addEventListener("click", () => {
