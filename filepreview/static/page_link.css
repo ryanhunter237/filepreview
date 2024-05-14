@@ -1,0 +1,13 @@
+.page-link {
+  text-decoration: none;
+  color: #0066cc;
+}
+
+.page-link:hover {
+  text-decoration: underline;
+  color: #0066cc;
+}
+
+.page-link:visited {
+  color: #551a8b;
+}

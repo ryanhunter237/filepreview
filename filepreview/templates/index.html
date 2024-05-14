@@ -2,10 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Files Overview</title>
+    <title>🏠 Files Home</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='page_link.css') }}"
     />
   </head>
   <body>
@@ -23,7 +27,9 @@
         <tr>
           {% if file.rowspan %}
           <td rowspan="{{ file.rowspan }}">
-            <a href="{{ url_for('view.group_page', group_id=file.group_id) }}"
+            <a
+              href="{{ url_for('view.group_page', group_id=file.group_id) }}"
+              class="page-link"
               >{{ file.group_id }}</a
             >
           </td>
@@ -31,6 +37,7 @@
           <td>
             <a
               href="{{ url_for('view.file_page', group_id=file.group_id, file_path=file.file_path) }}"
+              class="page-link"
               >{{ file.filename }}</a
             >
           </td>

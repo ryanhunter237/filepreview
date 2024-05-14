@@ -24,7 +24,7 @@ td {
 
 thead th {
   font-size: 1.2em;
-  background-color: #f4f4f4;
+  background-color: #f0f0f0;
 }
 
 .thumbnails img {
@@ -38,18 +38,4 @@ thead th {
 
 tr:not(:last-child) td {
   border-bottom: none;
-}
-
-a {
-  text-decoration: none;
-  color: #0066cc;
-}
-
-a:hover {
-  text-decoration: underline;
-  color: #0066cc;
-}
-
-a:visited {
-  color: #551a8b;
 }

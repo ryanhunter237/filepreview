@@ -1,0 +1,25 @@
+body {
+  position: relative;
+}
+
+.home-link-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+}
+
+.home-link {
+  text-decoration: none;
+  color: #0066cc;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  display: block;
+}
+
+.home-link:hover {
+  text-decoration: underline;
+}

@@ -3,15 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>File: {{ filename }}</title>
+    <title>🖼️ File Display</title>
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='file_viewer.css') }}"
+      href="{{ url_for('static', filename='file_display.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='page_header.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='home_link.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='page_link.css') }}"
     />
   </head>
   <body>
-    <h2>Group ID: {{ group_id }}</h2>
-    <h2>Path: {{ file_path }}</h2>
+    <div class="home-link-container">
+      <a href="{{ url_for('view.index') }}" class="home-link">🏠 Files Home</a>
+    </div>
+    <div class="page-header-container">
+      <a
+        href="{{ url_for('view.group_page', group_id=group_id) }}"
+        class="home-link page-header-item"
+        >📁 {{ group_id }}</a
+      >
+      <p class="page-header-item">Path: {{ file_path }}</p>
+    </div>
     <div id="imageInfo"></div>
     <div
       id="viewer"

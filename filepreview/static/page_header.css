@@ -1,0 +1,14 @@
+.page-header-container {
+  border: 2px solid #000;
+  border-radius: 8px;
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.page-header-item {
+  padding: 0;
+  margin: 7px;
+}
