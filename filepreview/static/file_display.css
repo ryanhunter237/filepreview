@@ -4,10 +4,32 @@ body {
   align-items: center;
 }
 
+.image-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.image-indicator .dot {
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  background-color: #ccc;
+  border-radius: 50%;
+  transition: width 0.3s, height 0.3s, background-color 0.3s;
+}
+
+.image-indicator .dot.active {
+  width: 15px;
+  height: 15px;
+  background-color: #0066cc;
+}
+
 #viewer {
   position: relative;
-  width: 600px;
-  height: 400px;
+  width: 800px;
+  height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
