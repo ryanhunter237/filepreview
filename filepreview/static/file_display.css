@@ -8,7 +8,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
+  height: 40px;
 }
 
 .image-indicator .dot {
@@ -44,7 +44,7 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(238, 238, 238, 0.3);
+  background-color: rgba(0, 102, 204, 0.2);
   font-size: 30px;
   border: none;
   padding: 0 10px 5px 10px;
@@ -61,5 +61,5 @@ body {
 }
 
 #viewer .btn:hover {
-  background-color: rgba(255, 255, 255, 0.8); /* More opaque on hover */
+  background-color: rgba(0, 102, 204, 0.8); /* More opaque on hover */
 }
