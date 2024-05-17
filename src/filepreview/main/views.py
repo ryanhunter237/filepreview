@@ -148,11 +148,13 @@ def group_page(group_id):
     return render_template("group.html", group_id=group_id, files=files)
 
 
-@view_blueprint.route("/group/<group_id>/file/<path:directory>/<filename>")
+@view_blueprint.route(
+    "/group/<group_id>/directory/<path:directory>/filename/<filename>"
+)
 def file_page(group_id, directory, filename):
-    print(f"{directory = }")
+    # could use query parameters here like /?directory= to avoid
+    # explicit url encoding/decoding (and thus double encoding like . -> %2E -> %252E )
     decoded_directory = unquote(directory)
-    print(f"{decoded_directory = }")
     return render_template(
         "file.html", group_id=group_id, directory=decoded_directory, filename=filename
     )
