@@ -33,12 +33,13 @@ def random_gradient(width: int, height: int):
     return image
 
 
-def post_file(group_id, file_path, md5):
+def post_file(group_id, directory, filename, md5):
     requests.post(
         url="http://127.0.0.1:5000/api/file",
         json={
             "group_id": group_id,
-            "file_path": file_path,
+            "directory": directory,
+            "filename": filename,
             "md5": md5,
         },
     )
@@ -71,14 +72,15 @@ rootdir.mkdir(exist_ok=True)
 for group_id in group_ids:
     group_dir = rootdir / group_id
     group_dir.mkdir(exist_ok=True)
-    num_files_per_group = random.randint(3, 6)
+    num_files_per_group = random.randint(2, 6)
     for _ in range(num_files_per_group):
         file_md5 = "".join(random.choices(hex_chars, k=32))
-        filename = "".join(random.choices(ascii_letters, k=10)) + ".ext"
-        directory = random.choice(["rel/path1/", "rel/path1/two/", "test/"])
-        post_file(group_id, f"{directory}{filename}", file_md5)
-        post_file_data(file_md5, random.randint(10**3, 10**8), "")
-        num_images_per_file = random.randint(2, 4)
+        extension = random.choice([".pdf", ".png", ".txt"])
+        filename = "".join(random.choices(ascii_letters, k=10)) + extension
+        directory = random.choice(["rel/path1/", "rel/path1/two/", "test/", ""])
+        post_file(group_id, directory, filename, file_md5)
+        post_file_data(file_md5, random.randint(10**2, 10**9), "")
+        num_images_per_file = random.randint(0, 4)
         for order in range(num_images_per_file):
             width = random.randint(300, 1000)
             height = random.randint(300, 1000)

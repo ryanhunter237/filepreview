@@ -9,8 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function fetchImages() {
     const groupId = viewer.dataset.groupId;
-    const filePath = viewer.dataset.filePath;
-    fetch(`/api/images?group_id=${groupId}&file_path=${filePath}`)
+    const directory = viewer.dataset.directory;
+    const filename = viewer.dataset.filename;
+    fetch(
+      `/api/images?group_id=${groupId}&directory=${directory}&filename=${filename}`
+    )
       .then((response) => response.json())
       .then((data) => {
         images = data;

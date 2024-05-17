@@ -24,7 +24,8 @@ def add_image():
 @image_blueprint.route("/api/images", methods=["GET"])
 def get_images():
     group_id = request.args.get("group_id")
-    file_path = request.args.get("file_path")
+    directory = request.args.get("directory")
+    filename = request.args.get("filename")
     data = (
         db.session.query(
             Image.order,
@@ -32,7 +33,8 @@ def get_images():
         )
         .join(File, File.md5 == Image.md5)
         .filter(File.group_id == group_id)
-        .filter(File.file_path == file_path)
+        .filter(File.directory == directory)
+        .filter(File.filename == filename)
         .all()
     )
     image_urls = [

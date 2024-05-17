@@ -31,13 +31,14 @@
         class="home-link page-header-item"
         >📁 {{ group_id }}</a
       >
-      <p class="page-header-item">Path: {{ file_path }}</p>
+      <p class="page-header-item">Path: {{ directory }}/{{ filename }}</p>
     </div>
     <div id="image-indicator" class="image-indicator"></div>
     <div
       id="viewer"
       data-group-id="{{ group_id }}"
-      data-file-path="{{ file_path }}"
+      data-directory="{{ directory }}"
+      data-filename="{{ filename }}"
     >
       <button id="prev" class="btn">«</button>
       <img id="currentImage" src="" alt="Image viewer" />

@@ -11,9 +11,10 @@ class File(db.Model):
 
     # an identifier for groups of files
     group_id: str = db.Column(db.String(32), primary_key=True, nullable=False)
-    # The path of the file, relative to some parent directory
+    # The directory where the file is located, relative to a parent directory
     # which is the same for files with the same group_id.
-    file_path: str = db.Column(db.String, primary_key=True, nullable=False)
+    directory: str = db.Column(db.String, primary_key=True, nullable=False)
+    filename: str = db.Column(db.String, primary_key=True, nullable=False)
     # md5 hash of the file's contents
     md5: str = db.Column(db.String(32), nullable=False)
 
@@ -23,11 +24,10 @@ class File(db.Model):
             return value.lower()
         return value
 
-    @validates("file_path")
+    @validates("directory")
     def make_posix(self, key, path: str):
-        if path:
-            return PurePath(path).as_posix()
-        return path
+        path = path or ""
+        return PurePath(path).as_posix()
 
     def __repr__(self) -> str:
         return f"<File group_id={self.group_id}, file_path={self.file_path}, md5={self.md5}>"
