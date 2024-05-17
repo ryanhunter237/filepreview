@@ -1,4 +1,4 @@
-from pathlib import PureWindowsPath
+from pathlib import PureWindowsPath, PurePath
 from typing import Iterator
 
 import pytest
@@ -44,7 +44,7 @@ def test_file_api_single_post_and_get(client: FlaskClient):
     assert response.status_code == 200
     assert len(data) == 1
     for key in post_data:
-        assert data[0][key] == post_data[key]
+        assert data[0][key] == PurePath(post_data[key]).as_posix()
 
 
 def test_file_api_multiple_post_and_get(client: FlaskClient):
@@ -84,4 +84,4 @@ def test_file_data_api_single_post(client: FlaskClient, app: Flask):
         file_data: FileData = FileData.query.filter_by(md5="123abc").first()
         assert file_data is not None
         assert file_data.num_bytes == post_data["num_bytes"]
-        assert file_data.local_path == post_data["local_path"]
+        assert file_data.local_path == PurePath(post_data["local_path"]).as_posix()
