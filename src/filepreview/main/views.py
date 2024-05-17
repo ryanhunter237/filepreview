@@ -3,7 +3,7 @@ from pathlib import PurePosixPath
 
 from flask import Blueprint, render_template, request
 
-from .models import db, File, FileData, Thumbnail, Image
+from .models import db, File, FileData, Thumbnail
 
 
 view_blueprint = Blueprint("view", __name__)

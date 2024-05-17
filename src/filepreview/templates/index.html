@@ -20,6 +20,8 @@
         id="filename"
         name="filename"
         value="{{ filename_filter }}"
+        placeholder="Enter part of the filename"
+        title="Search for files containing this text"
       />
       <label for="extension">Extension:</label>
       <input
@@ -27,8 +29,16 @@
         id="extension"
         name="extension"
         value="{{ extension_filter }}"
+        placeholder="e.g., jpg, png"
+        title="Search for files with this extension"
       />
       <button type="submit">Filter</button>
+      <button
+        type="reset"
+        onclick="window.location.href='{{ url_for('view.index') }}'"
+      >
+        Clear
+      </button>
     </form>
     <table>
       <thead>
