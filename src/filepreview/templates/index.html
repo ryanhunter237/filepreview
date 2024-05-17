@@ -11,6 +11,7 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='page_link.css') }}"
     />
+    <script src="{{ url_for('static', filename='loadIndex.js') }}"></script>
   </head>
   <body>
     <form method="GET" action="{{ url_for('view.index') }}">
@@ -35,7 +36,8 @@
       <button type="submit">Filter</button>
       <button
         type="reset"
-        onclick="window.location.href='{{ url_for('view.index') }}'"
+        data-reset-url="{{ url_for('view.index') }}"
+        onclick="resetForm(this)"
       >
         Clear
       </button>
