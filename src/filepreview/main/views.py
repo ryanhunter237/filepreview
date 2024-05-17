@@ -1,7 +1,7 @@
 import os
 from pathlib import PurePosixPath
 
-from flask import Blueprint, render_template, url_for
+from flask import Blueprint, render_template, request
 
 from .models import db, File, FileData, Thumbnail, Image
 
@@ -34,7 +34,10 @@ def serve_thumbnail(filepath: str):
 
 @view_blueprint.route("/", methods=["GET"])
 def index() -> str:
-    data = (
+    filename_filter = request.args.get("filename", "").strip()
+    extension_filter = request.args.get("extension", "").strip().lower()
+
+    data_query = (
         db.session.query(
             File.group_id,
             File.file_path,
@@ -44,8 +47,13 @@ def index() -> str:
         )
         .outerjoin(FileData, File.md5 == FileData.md5)
         .outerjoin(Thumbnail, File.md5 == Thumbnail.md5)
-        .all()
     )
+
+    if filename_filter:
+        data_query = data_query.filter(File.file_path.ilike(f"%{filename_filter}%"))
+    if extension_filter:
+        data_query = data_query.filter(File.file_path.ilike(f"%{extension_filter}"))
+    data = data_query.all()
 
     # processed_data of the form
     # (group_id, file_path) -> (file_path, num_bytes, thumbnails)
@@ -88,7 +96,12 @@ def index() -> str:
                 file["rowspan"] = len(data_for_group_id)
             files.append(file)
 
-    return render_template("index.html", files=files)
+    return render_template(
+        "index.html",
+        files=files,
+        filename_filter=filename_filter,
+        extension_filter=extension_filter,
+    )
 
 
 @view_blueprint.route("/group/<group_id>")
