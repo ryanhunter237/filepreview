@@ -1,15 +1,35 @@
 import os
+import subprocess
 from urllib.parse import unquote
 
-from flask import Blueprint, render_template, request
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    send_from_directory,
+    abort,
+    url_for,
+)
 
 from .models import db, File, FileData, Thumbnail
 
 
 view_blueprint = Blueprint("view", __name__)
 
-
-from flask import send_from_directory, abort
+EDRAWINGS_EXTENSIONS = tuple(
+    [
+        "sldasm",
+        "sldprt",
+        "dxf",
+        "obj",
+        "stl",
+        "asm",
+        "prt",
+        "stp",
+        "catproduct",
+        "igs",
+    ]
+)
 
 
 def convert_size(size: int):
@@ -155,6 +175,40 @@ def file_page(group_id, directory, filename):
     # could use query parameters here like /?directory= to avoid
     # explicit url encoding/decoding (and thus double encoding like . -> %2E -> %252E )
     decoded_directory = unquote(directory)
-    return render_template(
-        "file.html", group_id=group_id, directory=decoded_directory, filename=filename
+
+    result = (
+        db.session.query(
+            FileData.local_path,
+        )
+        .join(File, FileData.md5 == File.md5)
+        .filter(File.group_id == group_id)
+        .filter(File.directory == decoded_directory)
+        .filter(File.filename == filename)
+        .first()
     )
+    local_path = result[0] if result else None
+    if local_path and local_path.lower().endswith(EDRAWINGS_EXTENSIONS):
+        launch_url = url_for(
+            "view.launch",
+            application="C:/Program Files/Common Files/eDrawings2024/eDrawingOfficeAutomator.exe",
+            local_path=local_path,
+        )
+    else:
+        launch_url = None
+    return render_template(
+        "file.html",
+        group_id=group_id,
+        directory=decoded_directory,
+        filename=filename,
+        launch_url=launch_url,
+    )
+
+
+@view_blueprint.route(
+    "/launch/application/<path:application>/localpath/<path:local_path>"
+)
+def launch(application, local_path):
+    if os.path.exists(local_path):
+        subprocess.call([application, local_path])
+        return "File opened", 200
+    return "File not found", 404

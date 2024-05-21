@@ -1,3 +1,13 @@
+function launch(launchUrl) {
+  fetch(launchUrl).then((response) => {
+    if (response.ok) {
+      console.log("Launch Succeeded");
+    } else {
+      console.error("Launch Failed");
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const viewer = document.getElementById("viewer");
   const imageElement = document.getElementById("currentImage");

@@ -23,3 +23,20 @@ body {
 .home-link:hover {
   text-decoration: underline;
 }
+
+.launch-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  border: 2px solid black;
+  border-radius: 8px;
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+  transition: background-color 0.2s ease;
+}
+
+.launch-button:hover {
+  background-color: #d9d9d9;
+}

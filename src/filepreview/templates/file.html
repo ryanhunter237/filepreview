@@ -20,11 +20,17 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='page_link.css') }}"
     />
+    <script src="{{ url_for('static', filename='viewer.js') }}"></script>
   </head>
   <body>
     <div class="home-link-container">
       <a href="{{ url_for('view.index') }}" class="home-link">🏠 Files Home</a>
     </div>
+    {% if launch_url %}
+    <button class="launch-button" onclick="launch('{{ launch_url }}')">
+      Open File in Desktop App
+    </button>
+    {% endif %}
     <div class="page-header-container">
       <a
         href="{{ url_for('view.group_page', group_id=group_id) }}"
@@ -44,6 +50,5 @@
       <img id="currentImage" src="" alt="Image viewer" />
       <button id="next" class="btn">»</button>
     </div>
-    <script src="{{ url_for('static', filename='viewer.js') }}"></script>
   </body>
 </html>
