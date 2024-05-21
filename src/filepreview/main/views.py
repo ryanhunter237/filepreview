@@ -1,6 +1,5 @@
 import os
 import subprocess
-from urllib.parse import unquote
 
 from flask import (
     Blueprint,
@@ -125,8 +124,9 @@ def index() -> str:
     )
 
 
-@view_blueprint.route("/group/<group_id>")
-def group_page(group_id):
+@view_blueprint.route("/group", methods=["GET"])
+def group_page():
+    group_id = request.args.get("group_id", "").strip()
     data = (
         db.session.query(
             File.directory,
@@ -168,13 +168,11 @@ def group_page(group_id):
     return render_template("group.html", group_id=group_id, files=files)
 
 
-@view_blueprint.route(
-    "/group/<group_id>/directory/<path:directory>/filename/<filename>"
-)
-def file_page(group_id, directory, filename):
-    # could use query parameters here like /?directory= to avoid
-    # explicit url encoding/decoding (and thus double encoding like . -> %2E -> %252E )
-    decoded_directory = unquote(directory)
+@view_blueprint.route("/file")
+def file_page():
+    group_id = request.args.get("group_id", "").strip()
+    directory = request.args.get("directory").strip()
+    filename = request.args.get("filename").strip()
 
     result = (
         db.session.query(
@@ -182,7 +180,7 @@ def file_page(group_id, directory, filename):
         )
         .join(File, FileData.md5 == File.md5)
         .filter(File.group_id == group_id)
-        .filter(File.directory == decoded_directory)
+        .filter(File.directory == directory)
         .filter(File.filename == filename)
         .first()
     )
@@ -198,16 +196,16 @@ def file_page(group_id, directory, filename):
     return render_template(
         "file.html",
         group_id=group_id,
-        directory=decoded_directory,
+        directory=directory,
         filename=filename,
         launch_url=launch_url,
     )
 
 
-@view_blueprint.route(
-    "/launch/application/<path:application>/localpath/<path:local_path>"
-)
-def launch(application, local_path):
+@view_blueprint.route("/launch")
+def launch():
+    application = request.args.get("application", "").strip()
+    local_path = request.args.get("local_path").strip()
     if os.path.exists(local_path):
         subprocess.call([application, local_path])
         return "File opened", 200

@@ -65,7 +65,7 @@
           {% endif %}
           <td>
             <a
-              href="{{ url_for('view.file_page', group_id=file.group_id, directory=file.directory|custom_urlencode, filename=file.filename) }}"
+              href="{{ url_for('view.file_page', group_id=file.group_id, directory=file.directory, filename=file.filename) }}"
               class="page-link"
               >{{ file.filename }}</a
             >

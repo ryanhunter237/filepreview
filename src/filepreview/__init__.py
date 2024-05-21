@@ -1,5 +1,3 @@
-from urllib.parse import quote
-
 from flask import Flask
 
 from .main.models import db
@@ -13,7 +11,6 @@ def create_app(test_config: dict = None):
     app.config.from_object("filepreview.config")
     if test_config:
         app.config.update(test_config)
-    app.jinja_env.filters["custom_urlencode"] = custom_urlencode
 
     db.init_app(app)
     app.register_blueprint(file_blueprint)
@@ -24,7 +21,3 @@ def create_app(test_config: dict = None):
         db.create_all()
 
     return app
-
-
-def custom_urlencode(value):
-    return quote(value).replace(".", "%2E")
