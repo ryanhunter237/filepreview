@@ -26,11 +26,11 @@
     <div class="home-link-container">
       <a href="{{ url_for('view.index') }}" class="home-link">🏠 Files Home</a>
     </div>
-    {% if launch_url %}
-    <button class="launch-button" onclick="launch('{{ launch_url }}')">
-      Open File in Desktop App
-    </button>
-    {% endif %}
+    <button
+      id="launchButton"
+      class="launch-button"
+      data-md5="{{ md5 }}"
+    ></button>
     <div class="page-header-container">
       <a
         href="{{ url_for('view.group_page', group_id=group_id) }}"
@@ -39,7 +39,7 @@
       >
       <p class="page-header-item">Path: {{ directory }}/{{ filename }}</p>
     </div>
-    <div id="image-indicator" class="image-indicator"></div>
+    <div id="imageIndicator" class="image-indicator"></div>
     <div
       id="viewer"
       data-group-id="{{ group_id }}"

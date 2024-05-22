@@ -27,6 +27,19 @@ def post_file_data(md5, num_bytes, local_path):
     )
 
 
+def post_program(md5, program_name, program_exe):
+    # First put the program name into the filedata table
+    requests.put(
+        url="http://127.0.0.1:5000/api/file-data",
+        json={"md5": md5, "program": program_name},
+    )
+    # Next add the executable to the program table
+    requests.post(
+        url="http://127.0.0.1:5000/api/program",
+        json={"name": program_name, "executable": program_exe},
+    )
+
+
 def post_image(md5, order, path):
     requests.post(
         url="http://127.0.0.1:5000/api/image",
@@ -59,21 +72,26 @@ for render_dir in parent_renders_dir.glob("*"):
     logfile = next(render_dir.glob("CadConversion*"))
     file2renders = parse_logfile(logfile)
     cad_dir = Path(next(iter(file2renders))).parent
-    for cad_path in cad_dir.glob("*"):
-        with open(cad_path, "rb") as f:
+    for path in cad_dir.glob("*"):
+        with open(path, "rb") as f:
             file_bytes = f.read()
         file_md5 = hashlib.md5(file_bytes).hexdigest()
-        file_relpath = Path(cad_path).relative_to(parent_data_dir)
+        file_relpath = Path(path).relative_to(parent_data_dir)
         post_file(
             group_id=group_id,
             directory=str(file_relpath.parent),
             filename=file_relpath.name,
             md5=file_md5,
         )
-        post_file_data(
-            md5=file_md5, num_bytes=len(file_bytes), local_path=str(cad_path)
-        )
-        for i, render_abspath in enumerate(file2renders[cad_path]):
+        post_file_data(md5=file_md5, num_bytes=len(file_bytes), local_path=str(path))
+        # renders came from edrawings, so can put this in by default
+        if file2renders[path]:
+            post_program(
+                md5=file_md5,
+                program_name="eDrawings",
+                program_exe="C:/Program Files/Common Files/eDrawings2024/eDrawingOfficeAutomator.exe",
+            )
+        for i, render_abspath in enumerate(file2renders[path]):
             post_image(md5=file_md5, order=i, path=render_abspath)
             if not render_abspath.endswith(("iso.png", "front.png", "right.png")):
                 continue

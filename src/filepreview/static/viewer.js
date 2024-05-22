@@ -1,3 +1,32 @@
+// Add launch button when applicable
+document.addEventListener("DOMContentLoaded", function () {
+  const launchButton = document.getElementById("launchButton");
+
+  function addLaunchEffect() {
+    const md5 = launchButton.dataset.md5;
+    fetch(`/api/program/${md5}`)
+      .then((response) => response.json())
+      .then((data) => {
+        launchButton.textContent = `Open with ${data.program_name}`;
+        showLaunchButton();
+      })
+      .catch((error) => {
+        console.error("Error fetching program:", error);
+        hideLaunchButton();
+      });
+  }
+
+  function showLaunchButton() {
+    launchButton.style.display = "inline-block";
+  }
+
+  function hideLaunchButton() {
+    launchButton.style.display = "none";
+  }
+
+  addLaunchEffect();
+});
+
 function launch(launchUrl) {
   fetch(launchUrl).then((response) => {
     if (response.ok) {
@@ -8,10 +37,12 @@ function launch(launchUrl) {
   });
 }
 
+// Show viewer with images loaded from AJAX query
+// Hide viewer if there are no images
 document.addEventListener("DOMContentLoaded", function () {
   const viewer = document.getElementById("viewer");
   const imageElement = document.getElementById("currentImage");
-  const imageIndicator = document.getElementById("image-indicator");
+  const imageIndicator = document.getElementById("imageIndicator");
   const prevButton = document.getElementById("prev");
   const nextButton = document.getElementById("next");
   let images = [];

@@ -170,35 +170,29 @@ def group_page():
 
 @view_blueprint.route("/file")
 def file_page():
-    group_id = request.args.get("group_id", "").strip()
+    group_id = request.args.get("group_id").strip()
     directory = request.args.get("directory").strip()
     filename = request.args.get("filename").strip()
 
     result = (
         db.session.query(
-            FileData.local_path,
+            File.md5,
         )
-        .join(File, FileData.md5 == File.md5)
         .filter(File.group_id == group_id)
         .filter(File.directory == directory)
         .filter(File.filename == filename)
         .first()
     )
-    local_path = result[0] if result else None
-    if local_path and local_path.lower().endswith(EDRAWINGS_EXTENSIONS):
-        launch_url = url_for(
-            "view.launch",
-            application="C:/Program Files/Common Files/eDrawings2024/eDrawingOfficeAutomator.exe",
-            local_path=local_path,
-        )
-    else:
-        launch_url = None
+
+    if result is None:
+        abort(404, description="No md5 hash found for this file")
+
     return render_template(
         "file.html",
         group_id=group_id,
         directory=directory,
         filename=filename,
-        launch_url=launch_url,
+        md5=result.md5,
     )
 
 

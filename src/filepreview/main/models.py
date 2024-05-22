@@ -42,6 +42,8 @@ class FileData(db.Model):
     num_bytes: int = db.Column(db.Integer, nullable=False)
     # the absolute path where the file is saved on the local filesystem
     local_path: str = db.Column(db.String, nullable=False)
+    # the name of the program for opening the file
+    program: str = db.Column(db.String, nullable=True)
 
     @validates("md5")
     def make_lowercase(self, key, value: str):
@@ -57,6 +59,24 @@ class FileData(db.Model):
 
     def __repr__(self) -> str:
         return f"<FileData md5={self.md5}, num_bytes={self.num_bytes}, local_path={self.local_path}>"
+
+
+class Program(db.Model):
+    __tablename__ = "program"
+
+    # the name of the program
+    name: str = db.Column(db.String, primary_key=True, nullable=False)
+    # the executable needed to run the program
+    executable: str = db.Column(db.String, nullable=False)
+
+    @validates("executable")
+    def make_posix(self, key, path: str):
+        if path:
+            return PurePath(path).as_posix()
+        return path
+
+    def __repr__(self) -> str:
+        return f"<Program name={self.name}, executable={self.executable}"
 
 
 class Thumbnail(db.Model):
