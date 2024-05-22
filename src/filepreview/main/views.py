@@ -199,7 +199,7 @@ def file_page():
 @view_blueprint.route("/launch")
 def launch():
     application = request.args.get("application", "").strip()
-    local_path = request.args.get("local_path").strip()
+    local_path = request.args.get("local_path", "").strip()
     if os.path.exists(local_path):
         subprocess.call([application, local_path])
         return "File opened", 200

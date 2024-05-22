@@ -8,6 +8,10 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((data) => {
         launchButton.textContent = `Open with ${data.program_name}`;
+        launchButton.addEventListener("click", () => {
+          const launchUrl = `/launch?application=${data.program_exe}&local_path=${data.local_path}`;
+          fetch(launchUrl);
+        });
         showLaunchButton();
       })
       .catch((error) => {
@@ -113,12 +117,12 @@ document.addEventListener("DOMContentLoaded", function () {
     nextButton.style.display = "none";
   }
 
-  document.getElementById("prev").addEventListener("click", () => {
+  prevButton.addEventListener("click", () => {
     currentIndex = currentIndex > 0 ? currentIndex - 1 : images.length - 1;
     updateImage(currentIndex);
   });
 
-  document.getElementById("next").addEventListener("click", () => {
+  nextButton.addEventListener("click", () => {
     currentIndex = currentIndex < images.length - 1 ? currentIndex + 1 : 0;
     updateImage(currentIndex);
   });
