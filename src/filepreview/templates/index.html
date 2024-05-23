@@ -74,7 +74,7 @@
           <td class="thumbnails">
             {% for thumbnail_path in file.thumbnails %}
             <img
-              src="{{ url_for('view.serve_thumbnail', filepath=thumbnail_path) }}"
+              src="{{ url_for('view.serve_image', filepath=thumbnail_path) }}"
             />
             {% endfor %}
           </td>

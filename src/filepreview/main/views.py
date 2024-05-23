@@ -61,8 +61,8 @@ def process_data(data, include_group_id=True):
     return processed_data
 
 
-@view_blueprint.route("/thumbnail/<path:filepath>")
-def serve_thumbnail(filepath: str):
+@view_blueprint.route("/image/<path:filepath>")
+def serve_image(filepath: str):
     directory = os.path.dirname(filepath)
     filename = os.path.basename(filepath)
     try:

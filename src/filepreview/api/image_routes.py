@@ -38,6 +38,6 @@ def get_images():
         .all()
     )
     image_urls = [
-        url_for("view.serve_thumbnail", filepath=path) for _, path in sorted(data)
+        url_for("view.serve_image", filepath=path) for _, path in sorted(data)
     ]
     return jsonify(image_urls)
