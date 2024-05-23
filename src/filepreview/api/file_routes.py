@@ -8,7 +8,7 @@ file_blueprint = Blueprint("file", __name__)
 
 @file_blueprint.route("/api/file", methods=["POST"])
 def add_file():
-    """data must have keys group_id, file_path, and md5"""
+    """data must have keys group_id, directory, filename, and md5"""
     data = request.json
     return add_to_database(data, File)
 

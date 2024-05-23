@@ -30,7 +30,7 @@ class File(db.Model):
         return PurePath(path).as_posix()
 
     def __repr__(self) -> str:
-        return f"<File group_id={self.group_id}, file_path={self.file_path}, md5={self.md5}>"
+        return f"<File group_id={self.group_id}, directory={self.directory}, filename={self.filename}, md5={self.md5}>"
 
 
 class FileData(db.Model):
