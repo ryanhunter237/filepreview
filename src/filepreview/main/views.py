@@ -7,28 +7,12 @@ from flask import (
     request,
     send_from_directory,
     abort,
-    url_for,
 )
 
 from .models import db, File, FileData, Thumbnail
 
 
 view_blueprint = Blueprint("view", __name__)
-
-EDRAWINGS_EXTENSIONS = tuple(
-    [
-        "sldasm",
-        "sldprt",
-        "dxf",
-        "obj",
-        "stl",
-        "asm",
-        "prt",
-        "stp",
-        "catproduct",
-        "igs",
-    ]
-)
 
 
 def convert_size(size: int):
