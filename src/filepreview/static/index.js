@@ -1,52 +1,67 @@
 document.addEventListener("DOMContentLoaded", function () {
   async function populateTable() {
-    const response = await fetch(`/data`);
-    const data = await response.json();
-    const tableBody = document.getElementById("files-table");
+    try {
+      const response = await fetch(`/api/files`);
+      if (!response.ok)
+        throw new Error(`Network response was not ok: ${response.statusText}`);
+      const data = await response.json();
+      const tableBody = document.getElementById("files-table");
 
-    Object.keys(data).forEach((groupId) => {
-      const groupUrl = data[groupId]["group_url"];
-      const groupFiles = data[groupId]["files"]; // list of file objects
+      if (!tableBody) {
+        console.error('Table body with ID "files-table" not found');
+        return;
+      }
 
-      groupFiles.forEach((file, i) => {
-        const tr = document.createElement("tr");
+      const fragment = document.createDocumentFragment();
 
-        if (i === 0) {
-          const tdGroup = document.createElement("td");
-          tdGroup.setAttribute("rowspan", groupFiles.length);
-          const a = document.createElement("a");
-          a.setAttribute("href", groupUrl);
-          a.classList.add("page-link");
-          a.textContent = groupId;
-          tdGroup.appendChild(a);
-          tr.appendChild(tdGroup);
-        }
+      Object.keys(data).forEach((groupId) => {
+        const groupUrl = data[groupId]?.group_url;
+        const groupFiles = data[groupId]?.files || []; // default to empty array if undefined
 
-        const tdFilename = document.createElement("td");
-        const a = document.createElement("a");
-        a.setAttribute("href", file["file_url"]);
-        a.classList.add("page-link");
-        a.textContent = file["filename"];
-        tdFilename.appendChild(a);
-        tr.appendChild(tdFilename);
+        groupFiles.forEach((file, i) => {
+          const tr = document.createElement("tr");
 
-        const tdFilesize = document.createElement("td");
-        tdFilesize.textContent = file["file_size"];
-        tr.appendChild(tdFilesize);
+          if (i === 0) {
+            const tdGroup = document.createElement("td");
+            tdGroup.setAttribute("rowspan", groupFiles.length);
+            const groupLink = document.createElement("a");
+            groupLink.setAttribute("href", groupUrl);
+            groupLink.classList.add("page-link");
+            groupLink.textContent = groupId;
+            tdGroup.appendChild(groupLink);
+            tr.appendChild(tdGroup);
+          }
 
-        const tdThumbnails = document.createElement("td");
-        tdThumbnails.classList.add("thumbnails");
-        const thumbnailUrls = file["thumbnail_urls"];
-        thumbnailUrls.forEach((url) => {
-          const img = document.createElement("img");
-          img.setAttribute("src", url);
-          tdThumbnails.appendChild(img);
+          const tdFilename = document.createElement("td");
+          const fileLink = document.createElement("a");
+          fileLink.setAttribute("href", file?.file_url);
+          fileLink.classList.add("page-link");
+          fileLink.textContent = file?.filename;
+          tdFilename.appendChild(fileLink);
+          tr.appendChild(tdFilename);
+
+          const tdFilesize = document.createElement("td");
+          tdFilesize.textContent = file?.file_size;
+          tr.appendChild(tdFilesize);
+
+          const tdThumbnails = document.createElement("td");
+          tdThumbnails.classList.add("thumbnails");
+          const thumbnailUrls = file?.thumbnail_urls || [];
+          thumbnailUrls.forEach((url) => {
+            const img = document.createElement("img");
+            img.setAttribute("src", url);
+            tdThumbnails.appendChild(img);
+          });
+          tr.appendChild(tdThumbnails);
+
+          fragment.appendChild(tr);
         });
-        tr.appendChild(tdThumbnails);
-
-        tableBody.appendChild(td);
       });
-    });
+
+      tableBody.appendChild(fragment);
+    } catch (error) {
+      console.error("Failed to fetch and populate table:", error);
+    }
   }
 
   populateTable();

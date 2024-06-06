@@ -58,12 +58,13 @@ def get_files():
                 "file_size": convert_size(num_bytes),
                 "thumbnails": [],
             }
-        files[key]["thumbnails"].append(
-            {
-                "thumbnail_order": thumb_order,
-                "thumbnail_url": url_for("view.serve_image", filepath=thumb_path),
-            }
-        )
+        if thumb_path:
+            files[key]["thumbnails"].append(
+                {
+                    "thumbnail_order": thumb_order,
+                    "thumbnail_url": url_for("view.serve_image", filepath=thumb_path),
+                }
+            )
 
     formatted_data = {}
     for group_id, group_data in processed_data.items():
