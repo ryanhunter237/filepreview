@@ -1,6 +1,6 @@
-from flask import Blueprint, request, jsonify, abort
+from flask import Blueprint, request, jsonify, abort, url_for
 
-from ..main.models import File, FileData, Program, db
+from ..main.models import File, FileData, Program, db, Thumbnail
 from .utils import add_to_database
 
 file_blueprint = Blueprint("file", __name__)
@@ -11,6 +11,89 @@ def add_file():
     """data must have keys group_id, directory, filename, and md5"""
     data = request.json
     return add_to_database(data, File)
+
+
+def convert_size(size: int):
+    size = float(size)
+    suffixes = ["B", "KB", "MB", "GB"]
+    suffix_idx = 0
+    while size >= 1024 and suffix_idx < 3:
+        size /= 1024
+        suffix_idx += 1
+    return f"{round(size)} {suffixes[suffix_idx]}"
+
+
+@file_blueprint.route("/api/files", methods=["GET"])
+def get_files():
+    data = (
+        db.session.query(
+            File.group_id,
+            File.directory,
+            File.filename,
+            FileData.num_bytes,
+            Thumbnail.path,
+            Thumbnail.order,
+        )
+        .outerjoin(FileData, File.md5 == FileData.md5)
+        .outerjoin(Thumbnail, File.md5 == Thumbnail.md5)
+    ).all()
+    processed_data = {}
+    for group_id, directory, filename, num_bytes, thumb_path, thumb_order in data:
+        if group_id not in processed_data:
+            processed_data[group_id] = {
+                "group_url": url_for("view.group_page", group_id=group_id),
+                "files": {},
+            }
+        files = processed_data[group_id]["files"]
+        key = (directory, filename)
+        if key not in files:
+            files[key] = {
+                "filename": filename,
+                "file_url": url_for(
+                    "view.file_page",
+                    group_id=group_id,
+                    directory=directory,
+                    filename=filename,
+                ),
+                "file_size": convert_size(num_bytes),
+                "thumbnails": [],
+            }
+        files[key]["thumbnails"].append(
+            {
+                "thumbnail_order": thumb_order,
+                "thumbnail_url": url_for("view.serve_image", filepath=thumb_path),
+            }
+        )
+
+    formatted_data = {}
+    for group_id, group_data in processed_data.items():
+        formatted_data[group_id] = {
+            "group_url": group_data["group_url"],
+            "files": get_formatted_files_in_order(group_data["files"]),
+        }
+
+    return formatted_data
+
+
+def get_formatted_files_in_order(files: dict[tuple, dict]) -> list[dict[str, str]]:
+    sorted_file_keys = sorted(files)  # sorted by (directory, filename)
+    formatted_files = []
+    for key in sorted_file_keys:
+        file = files[key]
+        formatted_files.append(
+            {
+                "filename": file["filename"],
+                "file_url": file["file_url"],
+                "file_size": file["file_size"],
+                "thumbnail_urls": get_thumbnail_urls_in_order(file["thumbnails"]),
+            }
+        )
+    return formatted_files
+
+
+def get_thumbnail_urls_in_order(thumbnails: list[dict]) -> list[str]:
+    sorted_thumbnails = sorted(thumbnails, key=lambda d: d["thumbnail_order"])
+    return [d["thumbnail_url"] for d in sorted_thumbnails]
 
 
 @file_blueprint.route("/api/file-data", methods=["POST"])

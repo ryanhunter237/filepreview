@@ -11,7 +11,8 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='page_link.css') }}"
     />
-    <script src="{{ url_for('static', filename='loadIndex.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='loadIndex.js') }}"></script> -->
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
   </head>
   <body>
     <form method="GET" action="{{ url_for('view.index') }}">
@@ -51,8 +52,8 @@
           <th>Thumbnails</th>
         </tr>
       </thead>
-      <tbody>
-        {% for file in files %}
+      <tbody id="files-table">
+        <!-- {% for file in files %}
         <tr>
           {% if file.rowspan %}
           <td rowspan="{{ file.rowspan }}">
@@ -79,7 +80,7 @@
             {% endfor %}
           </td>
         </tr>
-        {% endfor %}
+        {% endfor %} -->
       </tbody>
     </table>
   </body>
