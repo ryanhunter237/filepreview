@@ -73,25 +73,7 @@ def serve_image(filepath: str):
 
 @view_blueprint.route("/", methods=["GET"])
 def index() -> str:
-    filename_filter = request.args.get("filename", "").strip()
-    extension_filter = request.args.get("extension", "").strip()
-
-    data_query = get_data_query()
-    if filename_filter:
-        data_query = data_query.filter(File.filename.ilike(f"%{filename_filter}%"))
-    if extension_filter:
-        data_query = data_query.filter(File.filename.ilike(f"%{extension_filter}"))
-
-    data = data_query.all()
-    processed_data = process_data(data, include_group_id=True)
-    files = organize_files_for_index(processed_data)
-
-    return render_template(
-        "index.html",
-        files=files,
-        filename_filter=filename_filter,
-        extension_filter=extension_filter,
-    )
+    return render_template("index.html")
 
 
 def organize_files_for_index(processed_data):

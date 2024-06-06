@@ -1,7 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-  async function populateTable() {
+  async function populateTable(filename = "", extension = "") {
     try {
-      const response = await fetch(`/api/files`);
+      const response = await fetch(
+        `/api/files?filename=${encodeURIComponent(
+          filename
+        )}&extension=${encodeURIComponent(extension)}`
+      );
       if (!response.ok)
         throw new Error(`Network response was not ok: ${response.statusText}`);
       const data = await response.json();
@@ -11,6 +15,9 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error('Table body with ID "files-table" not found');
         return;
       }
+
+      // Clear the table before appending new rows
+      tableBody.innerHTML = "";
 
       const fragment = document.createDocumentFragment();
 
@@ -63,6 +70,14 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("Failed to fetch and populate table:", error);
     }
   }
+
+  const form = document.getElementById("filter-form");
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const filename = document.getElementById("filename").value;
+    const extension = document.getElementById("extension").value;
+    populateTable(filename, extension);
+  });
 
   populateTable();
 });

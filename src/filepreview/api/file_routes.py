@@ -25,7 +25,10 @@ def convert_size(size: int):
 
 @file_blueprint.route("/api/files", methods=["GET"])
 def get_files():
-    data = (
+    filename_filter = request.args.get("filename", "").strip()
+    extension_filter = request.args.get("extension", "").strip()
+
+    data_query = (
         db.session.query(
             File.group_id,
             File.directory,
@@ -36,7 +39,13 @@ def get_files():
         )
         .outerjoin(FileData, File.md5 == FileData.md5)
         .outerjoin(Thumbnail, File.md5 == Thumbnail.md5)
-    ).all()
+    )
+    if filename_filter:
+        data_query = data_query.filter(File.filename.ilike(f"%{filename_filter}%"))
+    if extension_filter:
+        data_query = data_query.filter(File.filename.ilike(f"%{extension_filter}"))
+
+    data = data_query.all()
     processed_data = {}
     for group_id, directory, filename, num_bytes, thumb_path, thumb_order in data:
         if group_id not in processed_data:
