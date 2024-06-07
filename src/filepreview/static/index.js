@@ -79,5 +79,9 @@ document.addEventListener("DOMContentLoaded", function () {
     populateTable(filename, extension);
   });
 
+  form.addEventListener("reset", function (event) {
+    populateTable();
+  });
+
   populateTable();
 });
